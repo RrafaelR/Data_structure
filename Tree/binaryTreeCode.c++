@@ -29,11 +29,101 @@ void addNewNode(NodePointer *nodeP, int number){
         }
     }
 };
+void searchNode(NodePointer aux, int number){
+    if(aux==NULL){
+        cout << "Empty tree!\n";
+    }else if(number == aux->value){
+        cout << "Number was found!!\n";
+    }else if(number < aux->value){
+        searchNode(aux->left, number);
+    }else if(number > aux->value){
+        searchNode(aux->right, number);
+    }else{
+        cout << "Number not found!\n";
+    }
+}
+void listNodeInOrder(NodePointer p){
+    if(p != NULL){
+        listNodeInOrder(p->left);
+        cout << "\t" << p->value;
+        listNodeInOrder(p->right);
+    }
+}
+void listNodeInPreOrder(NodePointer p){
+    if(p != NULL){
+        cout << "\t" << p->value;
+        listNodeInOrder(p->left);
+        listNodeInOrder(p->right);
+    }
+}
+void listNodeInPostOrder(NodePointer p){
+    if(p != NULL){
+        listNodeInOrder(p->left);
+        listNodeInOrder(p->right);
+        cout << "\t" << p->value;
+    }
+}
+int nodeTotal(NodePointer aux){
+    if(aux == NULL) return 0;
+    return(nodeTotal(aux->left)+1+nodeTotal(aux->right));
+}
+NodePointer greaterNode(NodePointer *p){
+    NodePointer t;
+    t=*p;
+    if((t->right)==NULL){
+        *p=(*p)->left;
+        return(t);
+    }else{
+        return(greaterNode(&((*p)->right)));
+    }
+}
+void remove(NodePointer *p, int number){
+    NodePointer aux;
+    if((*p) != NULL){
+        if(number==(*p)->value){
+            aux = *p;
+            if(((*p)->left)==NULL)
+                *p=(*p)->right;
+            else    
+                if(((*p)->right)==NULL)
+                    *p=(*p)->left;
+                else{
+                    aux=greaterNode(&((*p)->left));
+                    (*p)->value=aux->value;
+                }
+            delete(aux);
+            cout << "\nO Elemento foi removido!!\n";
+        }else{
+            if(number<((*p)->value))
+                remove(&((*p)->left),number);
+            else
+                remove(&((*p)->right),number);
+        }
+    }
+}
+void listNodes(NodePointer p){
+    if(p!=NULL){
+        cout << p->value;
+        cout << "(";
+        listNodes(p->left);
+        listNodes(p->right);
+        cout << ")";
+    }
+}
 int main(){
     NodePointer root=newNode(35);
     addNewNode(&root, 25);
-    cout << root->value;
-    NodePointer p = root->left;
-    cout << "\t" << p->value;
+    addNewNode(&root, 10);
+    addNewNode(&root, 30);
+    addNewNode(&root, 28);
+    addNewNode(&root, 50);
+    addNewNode(&root, 40);
+    addNewNode(&root, 65);
+    searchNode(root, 65);
+    listNodes(root);
+    remove(&root, 35);
+    listNodes(root);
+
+    //cout << "\n" << nodeTotal(root);
     return 0;
 }
